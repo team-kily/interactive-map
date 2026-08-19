@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>Team Kily</title>
+  <style>
+    .k { fill: #bd642f; }
+    @media (prefers-color-scheme: dark) { .k { fill: #fff; } }
+  </style>
+  <path class="k" d="M12 6h11v21.2L40.2 6h14.1L34.4 29.5 56.2 56H42L27.1 37.9 23 42.7V56H12z" />
+</svg>

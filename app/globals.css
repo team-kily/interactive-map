@@ -1,0 +1,55 @@
+@import "../assets/style.css";
+@import "../assets/admin.css";
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  min-width: 900px;
+  min-height: 100vh;
+}
+
+body:has(.finder) {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+body:has(.finder) > .site-header,
+body:has(.finder) > footer {
+  flex: 0 0 auto;
+}
+
+body:has(.finder) > main {
+  width: 100%;
+  max-width: none;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+body:has(.finder) .intro,
+body:has(.finder) .city-chips {
+  flex: 0 0 auto;
+}
+
+.finder {
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+#map,
+.results {
+  min-height: 0;
+}
+.admin-list article { display:flex;justify-content:space-between;gap:18px;align-items:center;padding:17px 0;border-bottom:1px solid var(--line); }
+.admin-list article div { display:flex;flex-direction:column;gap:5px; }
+.admin-list article span { color:#68736d;font-size:.87rem; }
+.address-search label { margin-bottom:15px; }
+.address-search button { margin-bottom:15px; }

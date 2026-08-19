@@ -1,28 +1,35 @@
-# Interactive Map
+# Team Kily – interaktive Supermarktkarte
 
-Kleine PHP-App mit OpenStreetMap/Leaflet, synchronisierter Standortliste, Stadtfiltern und passwortgeschützter Marktverwaltung.
+Vercel-compatible JavaScript location map built with Next.js, Leaflet, OpenStreetMap and Postgres. It includes a synchronized map/list view, city filters and a protected administration area for searching, adding and deleting locations.
 
-## Serveranforderungen
+## Local development
 
-- PHP 8.1 oder neuer mit `mbstring`
-- Schreibrecht für PHP auf `data/stores.json`
-- Apache mit `.htaccess` oder eine entsprechende Sperre des Ordners `data/` in nginx
-- Ausgehende HTTPS-Verbindungen für die Adresssuche
+```bash
+npm install
+cp .env.example .env.local
+npm run dev
+```
 
-## Einrichtung
+Without `DATABASE_URL`, local development uses the JSON files in `data/`. The default local admin password is `bitte-aendern`; set `ADMIN_PASSWORD` in `.env.local` to override it.
 
-1. Den Inhalt dieses Ordners in den Document Root der Subdomain kopieren.
-2. Die Umgebungsvariable `MAP_ADMIN_PASSWORD` auf ein starkes Passwort setzen.
-3. Sicherstellen, dass PHP `data/stores.json` schreiben darf.
-4. `https://subdomain.example/admin.php` öffnen und Märkte eintragen.
+## Deploying to Vercel
 
-Ohne gesetzte Umgebungsvariable lautet das vorläufige Passwort `bitte-aendern`. Das darf nicht im Produktivbetrieb verwendet werden.
+1. Import the Git repository into Vercel.
+2. Add a Postgres integration such as Neon through the Vercel Marketplace.
+3. Ensure the integration supplies `DATABASE_URL`.
+4. Add `ADMIN_PASSWORD` and a random `AUTH_SECRET` with at least 32 characters to Production, Preview and Development.
+5. Deploy. On the first database request, the schema is created and the records from `data/stores.json` and `data/settings.json` are imported automatically.
 
-## Lizenzen und Dienste
+The production app deliberately refuses file-based writes when `DATABASE_URL` is missing.
+
+## Routes
+
+- `/` public map
+- `/admin` administration
+- `/api/stores`, `/api/settings`, `/api/geocode`, `/api/auth` serverless Route Handlers
+
+## Services and licenses
 
 - Leaflet: BSD-2-Clause
-- OpenStreetMap-Daten: ODbL, Quellenangabe ist in der Karte eingebaut
-- Standard-Kartenkacheln: öffentliche OpenStreetMap-Kachelserver; deren Tile Usage Policy gilt
-- Adresssuche: öffentliche Nominatim-Instanz; für geringe, manuelle Nutzung gedacht
-
-Für stark steigenden Traffic sollte ein eigener oder kommerziell betriebener Kachel-/Geocoding-Dienst konfiguriert werden.
+- OpenStreetMap data: ODbL with attribution included in the UI
+- Public OpenStreetMap tiles, Nominatim and Overpass: their respective usage policies apply

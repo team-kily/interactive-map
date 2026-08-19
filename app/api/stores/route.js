@@ -1,0 +1,8 @@
+import { randomUUID } from 'node:crypto';
+import { isAdmin } from '@/lib/auth';
+import { addStore, deleteStore, getStores } from '@/lib/db';
+export const runtime = 'nodejs';
+const clean = (value, max = 160) => String(value ?? '').trim().slice(0, max);
+export async function GET() { try { return Response.json(await getStores()); } catch { return Response.json({ error: 'Standorte konnten nicht geladen werden.' }, { status: 500 }); } }
+export async function POST(request) { if (!await isAdmin()) return Response.json({ error: 'Nicht autorisiert.' }, { status: 401 }); const input = await request.json().catch(() => null); const store = { id: randomUUID(), name: clean(input?.name), street: clean(input?.street), postalCode: clean(input?.postalCode, 12), city: clean(input?.city, 80), lat: Number(input?.lat), lng: Number(input?.lng), hours: clean(input?.hours, 240) }; if (!store.name || !store.city || !Number.isFinite(store.lat) || !Number.isFinite(store.lng)) return Response.json({ error: 'Name, Stadt und gültige Koordinaten sind erforderlich.' }, { status: 422 }); try { return Response.json(await addStore(store), { status: 201 }); } catch { return Response.json({ error: 'Der Markt konnte nicht gespeichert werden.' }, { status: 500 }); } }
+export async function DELETE(request) { if (!await isAdmin()) return Response.json({ error: 'Nicht autorisiert.' }, { status: 401 }); const { id } = await request.json().catch(() => ({ id: '' })); try { await deleteStore(clean(id, 80)); return Response.json({ ok: true }); } catch { return Response.json({ error: 'Der Markt konnte nicht gelöscht werden.' }, { status: 500 }); } }
