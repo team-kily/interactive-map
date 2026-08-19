@@ -1,0 +1,32 @@
+[
+  {
+    "id": "markt-bremen-1",
+    "name": "Beispielmarkt Findorff",
+    "street": "Hemmstraße 157",
+    "postalCode": "28215",
+    "city": "Bremen",
+    "lat": 53.09386,
+    "lng": 8.80785,
+    "hours": "Mo–Sa 08:00–20:00"
+  },
+  {
+    "id": "markt-hamburg-1",
+    "name": "Beispielmarkt Altona",
+    "street": "Ottenser Hauptstraße 10",
+    "postalCode": "22765",
+    "city": "Hamburg",
+    "lat": 53.55112,
+    "lng": 9.93424,
+    "hours": "Mo–Sa 07:00–21:00"
+  },
+  {
+    "id": "markt-hannover-1",
+    "name": "Beispielmarkt Mitte",
+    "street": "Georgstraße 22",
+    "postalCode": "30159",
+    "city": "Hannover",
+    "lat": 52.37406,
+    "lng": 9.73874,
+    "hours": "Mo–Sa 08:00–20:00"
+  }
+]
