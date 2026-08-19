@@ -1,6 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
 export default function Admin(){const[auth,setAuth]=useState(null),[stores,setStores]=useState([]),[settings,setSettings]=useState({featuredCities:[]}),[results,setResults]=useState([]),[storeMessage,setStoreMessage]=useState(''),[citiesMessage,setCitiesMessage]=useState(''),[searching,setSearching]=useState(false);useEffect(()=>{fetch('/api/auth').then(r=>r.json()).then(d=>setAuth(d.authenticated));},[]);const load=async()=>{const[s,c]=await Promise.all([fetch('/api/stores',{cache:'no-store'}).then(r=>r.json()),fetch('/api/settings',{cache:'no-store'}).then(r=>r.json())]);setStores(Array.isArray(s)?s:[]);setSettings(c)};useEffect(()=>{if(auth)load()},[auth]);
+  useEffect(()=>{if(!storeMessage)return;const timer=setTimeout(()=>setStoreMessage(''),3000);return()=>clearTimeout(timer)},[storeMessage]);
+  useEffect(()=>{if(!citiesMessage)return;const timer=setTimeout(()=>setCitiesMessage(''),3000);return()=>clearTimeout(timer)},[citiesMessage]);
   if(auth===null)return <main className="login">Laden …</main>;
   if(!auth)return <Login onSuccess={()=>setAuth(true)}/>;
   const search=async(event)=>{event.preventDefault();const query=String(new FormData(event.currentTarget).get('query')||'').trim();if(query.length<3)return;setSearching(true);setStoreMessage('');const response=await fetch(`/api/geocode?q=${encodeURIComponent(query)}`);const data=await response.json();const matches=Array.isArray(data)?data:[];setResults(matches);setSearching(false);if(!response.ok)setStoreMessage(data.error);else if(matches.length===0)setStoreMessage('Keine Märkte für diese Suche gefunden.')};
