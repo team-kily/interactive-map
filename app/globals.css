@@ -53,3 +53,6 @@ body:has(.finder) .city-chips {
 .admin-list article span { color:#68736d;font-size:.87rem; }
 .address-search label { margin-bottom:15px; }
 .address-search button { margin-bottom:15px; }
+.header-actions { display:flex;align-items:center;gap:20px; }
+.backend-login { display:inline-flex;align-items:center;justify-content:center;padding:10px 15px;border-radius:999px;background:var(--green);color:#fff;text-decoration:none;font-size:.78rem;font-weight:800; }
+.backend-login:hover { background:#0f3c2b; }
