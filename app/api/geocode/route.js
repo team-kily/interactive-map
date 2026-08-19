@@ -1,14 +1,20 @@
 import { isAdmin } from '@/lib/auth';
 
 const externalHeaders = {
-  'User-Agent': 'Interactive-Map/1.0',
+  'User-Agent': 'Team-Kily-Interactive-Map/1.0 (https://map.team-kily.de)',
   Accept: 'application/json',
 };
 
-async function getJson(url) {
+const overpassEndpoints = [
+  'https://overpass-api.de/api/interpreter',
+  'https://overpass.kumi.systems/api/interpreter',
+];
+
+async function getJson(url, timeout = 8000) {
   const response = await fetch(url, {
     headers: externalHeaders,
     cache: 'no-store',
+    signal: AbortSignal.timeout(timeout),
   });
 
   if (!response.ok) throw new Error();
@@ -62,7 +68,10 @@ async function storesWithin(result, fallback = {}) {
   if (!result?.boundingbox) return [];
   const [south, north, west, east] = result.boundingbox;
   const statement = `[out:json][timeout:12];nwr["shop"="supermarket"](${south},${west},${north},${east});out center tags 50;`;
-  const overpass = await getJson(`https://overpass-api.de/api/interpreter?${new URLSearchParams({ data: statement })}`);
+  const requests = overpassEndpoints.map((endpoint) => (
+    getJson(`${endpoint}?${new URLSearchParams({ data: statement })}`, 7000)
+  ));
+  const overpass = await Promise.any(requests);
 
   return overpass.elements
     .filter((element) => element.lat || element.center?.lat)
@@ -95,6 +104,14 @@ export async function GET(request) {
 
     return Response.json(places);
   } catch {
-    return Response.json({ error: 'Die Standortsuche ist gerade nicht erreichbar.' }, { status: 502 });
+    try {
+      const fallback = await getJson(nominatim(`supermarket ${query}`, 10), 6000);
+      const stores = fallback.filter((result) => !isAreaResult(result));
+      if (stores.length) return Response.json(stores);
+    } catch {
+      // Return the user-facing error below when all providers fail.
+    }
+
+    return Response.json({ error: 'Die Standortsuche ist gerade nicht erreichbar. Bitte in einigen Sekunden erneut versuchen.' }, { status: 502 });
   }
 }
